@@ -1,12 +1,12 @@
 {
-    "name": "masmaleki/zoho-v3",
+    "name": "masmaleki/zoho-v4",
     "description": "Zoho all in one for Laravel",
     "keywords": [
         "masmaleki",
         "laravel",
-        "zoho-v3"
+        "zoho-v4"
     ],
-    "homepage": "https://github.com/masmaleki/zoho-v3",
+    "homepage": "https://github.com/masmaleki/zoho-v4",
     "license": "MIT",
     "authors": [
         {
@@ -16,18 +16,23 @@
         }
     ],
     "require": {
-        "php": "^8.0",
-        "guzzlehttp/guzzle": "^7.2",
-        "spatie/laravel-package-tools": "^1.9.2",
-        "illuminate/contracts": "^9.0"
+        "php": "^8.2",
+        "guzzlehttp/guzzle": "^7.5",
+        "spatie/laravel-package-tools": "^1.16",
+        "illuminate/contracts": "^10.0|^11.0|^12.0|^13.0"
     },
     "require-dev": {
         "laravel/pint": "^1.0",
-        "nunomaduro/collision": "^6.0",
-        "orchestra/testbench": "^7.0",
-        "pestphp/pest": "^1.21",
-        "pestphp/pest-plugin-laravel": "^1.1",
-        "phpunit/phpunit": "^9.5"
+        "nunomaduro/collision": "^7.8|^8.0|^9.0",
+        "larastan/larastan": "^2.0|^3.0",
+        "orchestra/testbench": "^8.8|^9.0|^10.0|^11.0",
+        "pestphp/pest": "^2.20|^3.0|^4.0",
+        "pestphp/pest-plugin-arch": "^2.0|^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0|^4.0",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan-deprecation-rules": "^1.0|^2.0",
+        "phpstan/phpstan-phpunit": "^1.0|^2.0",
+        "spatie/laravel-ray": "^1.26"
     },
     "autoload": {
         "psr-4": {
@@ -49,7 +54,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
         }
     },
     "extra": {

@@ -17,10 +17,15 @@ class ZohoAllInOneServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('zoho-v3')
+            ->name('zoho-v4')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigrations('create_zoho_v3_table', 'create_zoho_model_has_roles_table')
+            ->hasMigrations(
+                'create_zoho_v4_table',
+                'create_zoho_model_has_roles_table',
+                'rename_zoho_v3_to_zoho_v4_table',
+                'add_organization_id_to_zoho_v4_table',
+            )
             ->hasCommand(ZohoAllInOneCommand::class);
     }
 
@@ -42,6 +47,6 @@ class ZohoAllInOneServiceProvider extends PackageServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../database/seeders/ZohoUserHasRoleSeeder.php' => database_path('seeders/ZohoUserHasRoleSeeder.php'),
-        ], 'zoho-v3-seeders');
+        ], 'zoho-v4-seeders');
     }
 }

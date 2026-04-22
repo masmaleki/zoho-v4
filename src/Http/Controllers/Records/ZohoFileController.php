@@ -5,17 +5,14 @@ namespace Masmaleki\ZohoAllInOne\Http\Controllers\Records;
 
 use GuzzleHttp\Client;
 use Masmaleki\ZohoAllInOne\Http\Controllers\Auth\ZohoTokenCheck;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ZohoVendorRFQController
+class ZohoFileController
 {
 
 
-    public static function createV6($data = null)
+
+    public static function getFileV6($zoho_id)
     {
-        if (!$data) {
-            return null;
-        }
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
             return [
@@ -28,20 +25,101 @@ class ZohoVendorRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v6/' . config('zoho-v4.custom_modules_names.vendor_rfq');
+        $apiURL = $token->api_domain . '/crm/v6/files?id='.$zoho_id;
         $client = new Client();
 
         $headers = [
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $body = [
-            'data' => [
-                0 => $data
-            ]
-        ];
         try {
-            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $response = $client->request('GET', $apiURL, ['headers' => $headers, ['stream' => true]]);
+
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        return $responseBody;
+    }
+    public static function uploadFileV6($image, $fileMime, $fileUploadedName)
+    {
+        $token = ZohoTokenCheck::getToken();
+        if (!$token) {
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        $apiURL = $token->api_domain . '/crm/v6/files';
+        $client = new Client();
+
+        $params = [
+            'headers' => [
+                'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+            ],
+            'multipart' => [
+                [
+                    'name' => 'file',
+                    'filename' => $fileUploadedName,
+                    'Mime-Type' => $fileMime,
+                    'contents' => $image,
+                ],
+            ],
+        ];
+
+        try {
+            $response = $client->request('POST', $apiURL, $params);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        return $responseBody;
+    }
+    public static function deleteFileV6($zoho_id)
+    {
+        $token = ZohoTokenCheck::getToken();
+        if (!$token) {
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        $apiURL = $token->api_domain . '/crm/v6/files?id='.$zoho_id;
+        $client = new Client();
+
+        $headers = [
+            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+        ];
+
+        try {
+            $response = $client->request('DELETE', $apiURL, ['headers' => $headers]);
             $statusCode = $response->getStatusCode();
             $responseBody = json_decode($response->getBody(), true);
         } catch (\Exception $e) {
@@ -58,138 +136,8 @@ class ZohoVendorRFQController
         return $responseBody;
     }
 
-    public static function get($vendor_rfq_id)
-    {
-        $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return [
-                'data' => [
-                    0 => [
-                        'code' => 498,
-                        'message' => 'Invalid or missing token.',
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
 
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '/' . $vendor_rfq_id;
-        $client = new Client();
 
-        $headers = [
-            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
-        ];
 
-        try {
-            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-            $statusCode = $response->getStatusCode();
-            $responseBody = json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            $responseBody = [
-                'data' => [
-                    0 => [
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        return $responseBody;
-    }
 
-    public static function getAll($page_token = null, $page = 1, $perPage = 200)
-    {
-        $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return [
-                'data' => [
-                    0 => [
-                        'code' => 498,
-                        'message' => 'Invalid or missing token.',
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '?fields=Created_Time,id,Date,Email,Offered_Products,Quantity,Related_RFQs,Requested_Products,Secondary_Email,Status,Vendor_Name,Tag,Name,Vendor_RFQ_Number,Owner';
-        if ($page_token) {
-            $apiURL .= '&page_token=' . $page_token;
-        } else {
-            $apiURL .= '&page=' . $page . '&per_page=' . $perPage;
-        }
-        $client = new Client();
-
-        $headers = [
-            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
-        ];
-
-        try {
-            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-            $statusCode = $response->getStatusCode();
-            $responseBody = json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            $responseBody = [
-                'data' => [
-                    0 => [
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        return $responseBody;
-    }
-
-    public static function update($data = [])
-    {
-        $zoho_rfq_id = $data['id'];
-
-        $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return [
-                'data' => [
-                    0 => [
-                        'code' => 498,
-                        'message' => 'Invalid or missing token.',
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '/' . $zoho_rfq_id . '';
-        $client = new Client();
-
-        $headers = [
-            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
-        ];
-
-        if (!isset($data['id'])) {
-            $data['id'] = $zoho_rfq_id;
-        }
-
-        $body = [
-            'data' => [
-                0 => $data
-            ]
-        ];
-
-        try {
-            $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
-            $statusCode = $response->getStatusCode();
-            $responseBody = json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            $responseBody = [
-                'data' => [
-                    0 => [
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        return $responseBody;
-    }
 }

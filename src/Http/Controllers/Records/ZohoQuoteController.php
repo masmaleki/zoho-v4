@@ -12,7 +12,15 @@ class ZohoQuoteController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Quotes/' . $quote_id;
 
@@ -22,9 +30,21 @@ class ZohoQuoteController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -32,7 +52,15 @@ class ZohoQuoteController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Quotes?fields=Subject,Product_Name,id,Quote_Date,Quantity,Quote_Stage';
         $client = new Client();
@@ -41,17 +69,37 @@ class ZohoQuoteController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
-    public static function getAccountQuotes($zoho_crm_account_id, $page_token = null, $fields = null, $next_page, $per_page, $conditions = null)
+    public static function getAccountQuotes($zoho_crm_account_id, $page_token = null, $fields = null, $next_page = 1, $per_page = 200, $conditions = null)
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
 
         if (is_array($zoho_crm_account_id)) {
@@ -94,9 +142,21 @@ class ZohoQuoteController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -104,7 +164,15 @@ class ZohoQuoteController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
 
         $apiURL = $token->api_domain . '/crm/v3/coql';
@@ -123,10 +191,21 @@ class ZohoQuoteController
             'select_query' => "select " . $fields . " from Quotes where " . $conditions . $zoho_crm_account_id_conditions . "  limit " . $offset . ", 200",
         ];
 
-        $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
-
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -134,7 +213,15 @@ class ZohoQuoteController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Quotes/search?word=' . $phrase . $criteria;
         $client = new Client();
@@ -143,9 +230,21 @@ class ZohoQuoteController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -155,7 +254,15 @@ class ZohoQuoteController
 
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Quotes/' . $zoho_contact_id . '';
         $client = new Client();
@@ -174,9 +281,123 @@ class ZohoQuoteController
             ]
         ];
 
-        $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        return $responseBody;
+    }
+
+    public static function updateSkipMandatoryV6($data = [])
+    {
+        $zoho_contact_id = $data['id'];
+
+        $token = ZohoTokenCheck::getToken();
+        if (!$token) {
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        $apiURL = $token->api_domain . '/crm/v6/Quotes/' . $zoho_contact_id . '?affected_data=true';
+        $client = new Client();
+
+        $headers = [
+            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+        ];
+
+        if (!isset($data['id'])) {
+            $data['id'] = $zoho_contact_id;
+        }
+
+        $body = [
+            'data' => [
+                0 => $data,
+
+            ],
+            'skip_mandatory' => true
+
+        ];
+        info(json_encode($body));
+
+        try {
+            $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        return $responseBody;
+    }
+
+    public static function createV6($data = null)
+    {
+        if (!$data) {
+            return null;
+        }
+        $token = ZohoTokenCheck::getToken();
+        if (!$token) {
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
+        $apiURL = $token->api_domain . '/crm/v6/Quotes' ;
+        $client = new Client();
+
+        $headers = [
+            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+        ];
+
+        $body = [
+            'data' => [
+                0 => $data
+            ]
+        ];
+        try {
+            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 

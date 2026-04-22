@@ -5,6 +5,7 @@ namespace Masmaleki\ZohoAllInOne\Http\Controllers\Records;
 
 use GuzzleHttp\Client;
 use Masmaleki\ZohoAllInOne\Http\Controllers\Auth\ZohoTokenCheck;
+use Illuminate\Support\Carbon;
 
 class ZohoProductController
 {
@@ -12,7 +13,15 @@ class ZohoProductController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
 
         $fields = $fields ? $fields : 'Product_Name,Lifecylce_Status,Owner,Created_By,Modified_By';
@@ -29,9 +38,21 @@ class ZohoProductController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -40,7 +61,15 @@ class ZohoProductController
 
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products/' . $zoho_product_id;
         // $apiURL = $token->api_domain . '/crm/v3/Products/search?criteria=(id:equals:' . $zoho_product_id . ')';
@@ -53,22 +82,34 @@ class ZohoProductController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
     public static function getItemById($zoho_books_item_id, $organization_id = null)
     {
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
-        if ($organization_id) {
-            $apiURL .= '?organization_id=' . $organization_id;
-        }
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id . '?organization_id=' . $organization_id;
         $client = new Client();
         $headers = [
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
@@ -93,7 +134,7 @@ class ZohoProductController
         if (!$token) {
             return null;
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items?page=' . $page . $condition;
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items?page=' . $page . $condition;
         if ($organization_id) {
             $apiURL .= '&organization_id=' . $organization_id;
         }
@@ -119,10 +160,13 @@ class ZohoProductController
     public static function searchItemByName($product_name, $organization_id = null)
     {
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items?page=1&per_page=25&sort_column=created_time&sort_order=A&name_contains=' . $product_name;
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items?page=1&per_page=25&sort_column=created_time&sort_order=A&name_contains=' . $product_name;
         if ($organization_id) {
             $apiURL .= '&organization_id=' . $organization_id;
         }
@@ -131,9 +175,16 @@ class ZohoProductController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ];
+        }
         return $responseBody;
     }
 
@@ -143,7 +194,15 @@ class ZohoProductController
 
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products/' . $zoho_product_id . '';
         $client = new Client();
@@ -183,7 +242,15 @@ class ZohoProductController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products';
         $client = new Client();
@@ -198,11 +265,24 @@ class ZohoProductController
             ]
         ];
 
-        $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
+
 
     public static function updateItem($data = [])
     {
@@ -211,13 +291,14 @@ class ZohoProductController
         unset($data['organization_id']);
         unset($data['id']);
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
-        if ($organization_id) {
-            $apiURL .= '?organization_id=' . $organization_id;
-        }
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id . '?organization_id=' . $organization_id;
+
         $client = new Client();
 
         $headers = [
@@ -245,7 +326,7 @@ class ZohoProductController
         if (!$token) {
             return null;
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items';
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items';
         if ($organization_id) {
             $apiURL .= '?organization_id=' . $organization_id;
         }
@@ -273,7 +354,15 @@ class ZohoProductController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products/search?word=' . $phrase;//. '&fields=Product_Name,Part_Description';
         $client = new Client();
@@ -282,9 +371,21 @@ class ZohoProductController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 
@@ -292,7 +393,15 @@ class ZohoProductController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products/' . $zoho_product_id . '/photo';
         $client = new Client();
@@ -301,24 +410,54 @@ class ZohoProductController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers, ['stream' => true]]);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers, ['stream' => true]]);
+            $responseBody = $response->getBody()->getContents();
+            $base64 = base64_encode($responseBody);
 
-        $responseBody = $response->getBody()->getContents();
-        $base64 = base64_encode($responseBody);
+            if (!$base64) return null;
 
-        if (!$base64) return null;
+            $mime = "image/jpeg";
+            $img = ('data:' . $mime . ';base64,' . $base64);
 
-        $mime = "image/jpeg";
-        $img = ('data:' . $mime . ';base64,' . $base64);
+            return $img;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 
-        return $img;
+
+    public static function deleteImage($zoho_product_id)
+    {
+        $token = ZohoTokenCheck::getToken();
+        if (!$token) {
+            return null;
+        }
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
+        if ($organization_id) {
+            $apiURL .= '?organization_id=' . $organization_id;
+        }
+        
+        $client = new Client();
+
+        $headers = [
+            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+        ];
+
+        $response = $client->request('DELETE', $apiURL, ['headers' => $headers]);
+        $statusCode = $response->getStatusCode();
+        $responseBody = json_decode($response->getBody(), true);
+        return $responseBody;
     }
 
     public static function updateImage($zoho_product_id, $filePath, $fileMime, $fileUploadedName)
     {
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
         $apiURL = $token->api_domain . '/crm/v3/Products/' . $zoho_product_id . '/photo';
         $client = new Client();
@@ -343,32 +482,17 @@ class ZohoProductController
         return $responseBody;
     }
 
-    public static function deleteImage($zoho_product_id)
-    {
-        $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
-        }
-        $apiURL = $token->api_domain . '/crm/v3/Products/' . $zoho_product_id . '/photo';
-        $client = new Client();
-
-        $headers = [
-            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
-        ];
-
-        $response = $client->request('DELETE', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
-        return $responseBody;
-    }
 
     public static function getZohoBooksItem($zoho_books_item_id, $organization_id = null)
     {
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
         if ($organization_id) {
             $apiURL .= '?organization_id=' . $organization_id;
         }
@@ -384,23 +508,36 @@ class ZohoProductController
         return $responseBody;
     }
 
-    public static function getAllZohoBooksItems($organization_id = null, $page, $conditions)
+    public static function getAllZohoBooksItems($organization_id, $page, $conditions)
+
     {
         $token = ZohoTokenCheck::getToken();
-        if (!$token) {
-            return null;
+        if (!$token || !$organization_id) {
+            return [
+                'code' => 498,
+                'message' => 'Invalid/missing token or organization ID.',
+            ];
         }
-        $apiURL = config('zoho-v3.books_api_base_url') . '/books/v3/items?organization_id=' . $organization_id . '&page=' . $page . $conditions;
-
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/items/' . $zoho_books_item_id;
+        if ($organization_id) {
+            $apiURL .= '?organization_id=' . $organization_id;
+        }
         $client = new Client();
 
         $headers = [
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+            ];
+        }
         return $responseBody;
     }
 
@@ -408,7 +545,15 @@ class ZohoProductController
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
 
         $apiURL = $token->api_domain . '/crm/v3/coql';
@@ -427,11 +572,21 @@ class ZohoProductController
             'select_query' => "select " . $fields . " from Products where " . $conditions . $zoho_crm_product_id_conditions . "  limit " . $offset . ", 200",
         ];
 
-        $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
-
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
-
 }

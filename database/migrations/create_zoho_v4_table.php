@@ -18,8 +18,9 @@ return new class extends Migration
 //  primary key (id)
     public function up()
     {
-        Schema::create('zoho_v3', function (Blueprint $table) {
+        Schema::create('zoho_v4', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('organization_id')->nullable()->index();
             $table->string('user_mail')->nullable();
             $table->string('client_id')->nullable();
             $table->string('client_secret')->nullable();
@@ -42,6 +43,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('zoho_v3');
+        Schema::dropIfExists('zoho_v4');
     }
 };

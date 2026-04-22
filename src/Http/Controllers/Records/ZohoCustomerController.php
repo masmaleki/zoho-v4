@@ -2,15 +2,16 @@
 
 namespace Masmaleki\ZohoAllInOne\Http\Controllers\Records;
 
-
 use GuzzleHttp\Client;
 use Masmaleki\ZohoAllInOne\Http\Controllers\Auth\ZohoTokenCheck;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ZohoPackageController
+class ZohoCustomerController
 {
-    public static function getAll($organization_id, $page = 1, $condition = '')
+
+    public static function create($data = [])
     {
+        $organization_id = $data['organization_id'] ?? null;
+        unset($data['organization_id']);
         $token = ZohoTokenCheck::getToken();
         if (!$token || !$organization_id) {
             return [
@@ -18,7 +19,7 @@ class ZohoPackageController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/packages?organization_id=' . $organization_id . '&page=' . $page . $condition;
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/contacts/?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -26,8 +27,10 @@ class ZohoPackageController
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
+        $body = $data;
+
         try {
-            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
             $statusCode = $response->getStatusCode();
             $responseBody = json_decode($response->getBody(), true);
         } catch (\Exception $e) {
@@ -39,30 +42,33 @@ class ZohoPackageController
         return $responseBody;
     }
 
-    public static function searchByCustomerId($zoho_customer_id, $searchParameter, $organization_id)
+    public static function update($data = [])
     {
+        $organization_id = $data['organization_id'] ?? null;
+        $contact_id = $data['contact_id'] ?? null;
+        unset($data['organization_id']);
+        unset($data['contact_id']);
 
         $token = ZohoTokenCheck::getToken();
-        if (!$token || !$organization_id) {
+        if (!$token || !$organization_id || !$contact_id) {
             return [
                 'code' => 498,
-                'message' => 'Invalid/missing token or organization ID.',
+                'message' => 'Invalid/missing token, organization ID, or contact ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/packages?customer_id=' . $zoho_customer_id . '&organization_id=' . $organization_id;
-
-        if ($searchParameter) {
-            $apiURL .= '&package_number_contains=' . $searchParameter;
-        }
+        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/contacts/' . $contact_id . '?organization_id=' . $organization_id;
 
         $client = new Client();
 
         $headers = [
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+            'Content-Type' => 'application/json',
         ];
 
+        $body = $data;
+
         try {
-            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
             $statusCode = $response->getStatusCode();
             $responseBody = json_decode($response->getBody(), true);
         } catch (\Exception $e) {

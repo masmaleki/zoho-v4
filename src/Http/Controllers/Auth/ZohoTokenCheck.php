@@ -10,14 +10,16 @@ use Masmaleki\ZohoAllInOne\Models\ZohoToken;
 class ZohoTokenCheck
 {
 
-    public static function getToken()
+    public static function getToken($organizationId = null)
     {
-        $zoho_token = ZohoToken::query()->latest()->first();
+        $org = $organizationId ?: config('zoho-v4.current_internal_organization_id');
+
+        $zoho_token = ZohoToken::query()->where('organization_id', '=', $org ?? 1)->latest()->first();
         if ($zoho_token) {
             $expiry_time = Carbon::parse($zoho_token->expiry_time);
             if ($expiry_time->lt(Carbon::now())) {
                 $zoho = new ZohoCustomTokenStore();
-                $zoho_token = $zoho->refreshToken($zoho_token->id);
+                $zoho_token = $zoho->refreshToken($zoho_token->id, $organizationId);
             }
             return $zoho_token;
         }
@@ -27,20 +29,29 @@ class ZohoTokenCheck
 
     public function applicationRegister()
     {
-        return redirect(ZohoConfig::getAuthUrl());
+        $organizationId = request()->get('organization_id');
+        return redirect(ZohoConfig::getAuthUrl($organizationId));
     }
 
-    public static function saveTokens(Request $request)
+    public static function saveTokens(Request $request, $organizationId = null)
     {
         $data = $request->all();
 
+        $z_api_url = config('zoho-v4.api_base_url');
+        $z_current_user_email = config('zoho-v4.current_user_email');
+        $z_return_url = config('zoho-v4.redirect_uri');
+        $z_url = config('zoho-v4.accounts_url');
 
-        $client_id = config('zoho-v3.client_id');
-        $secret_key = config('zoho-v3.client_secret');
-        $z_url = config('zoho-v3.accounts_url');
-        $z_return_url = config('zoho-v3.redirect_uri');
-        $z_api_url = config('zoho-v3.api_base_url');
-        $z_current_user_email = config('zoho-v3.current_user_email');
+        if ($organizationId == null) {
+            $client_id = config('zoho-v4.client_id');
+            $secret_key = config('zoho-v4.client_secret');
+            $z_oauth_scope = config('zoho-v4.oauth_scope');
+        } else {
+            $client_id = config('zoho-v4.client_id_' . $organizationId);
+            $secret_key = config('zoho-v4.client_secret_' . $organizationId);
+            $z_return_url = "$z_return_url/$organizationId";
+            $z_oauth_scope = config('zoho-v4.oauth_scope_' . $organizationId);
+        }
 
         $postInput = [
             'grant_type' => 'authorization_code',
@@ -51,10 +62,10 @@ class ZohoTokenCheck
         ];
         $zoho = new ZohoCustomTokenStore();
         if ($request->has('refresh_token')) {
-            $token = $zoho->saveToken($postInput, $request->all(), $client_id, $secret_key, $z_return_url);
+            $zoho->saveToken($postInput, $request->all(), $client_id, $secret_key, $z_return_url, $organizationId);
         } else {
             $resp = $zoho->getToken($data['accounts-server'], $data['location'], $postInput);
-            $token = $zoho->saveToken($postInput, $resp, $client_id, $secret_key, $z_return_url);
+            $zoho->saveToken($postInput, $resp, $client_id, $secret_key, $z_return_url, $organizationId);
         }
         $message = 'Token is created now!';
 
