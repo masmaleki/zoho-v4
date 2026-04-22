@@ -12,10 +12,17 @@ class ZohoHistoryPOSO
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
-            return null;
-        
+            return [
+                'data' => [
+                    0 => [
+                        'code' => 498,
+                        'message' => 'Invalid or missing token.',
+                        'status' => 'error',
+                    ]
+                ],
+            ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v3.custom_modules_names.history_po_so') . '?';
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.history_po_so') . '?';
 
         if ($page_token) {
             $apiURL .= '&page_token=' . $page_token;
@@ -24,7 +31,7 @@ class ZohoHistoryPOSO
         if ($fields) {
             $apiURL .= '&fields=' . $fields;
         }
-        
+
         if ($conditions) {
             $apiURL .= '&fields=' . $fields;
         }
@@ -35,9 +42,21 @@ class ZohoHistoryPOSO
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-        $statusCode = $response->getStatusCode();
-        $responseBody = json_decode($response->getBody(), true);
+        try {
+            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
+            $statusCode = $response->getStatusCode();
+            $responseBody = json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            $responseBody = [
+                'data' => [
+                    0 => [
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'status' => 'error',
+                    ]
+                ],
+            ];
+        }
         return $responseBody;
     }
 }

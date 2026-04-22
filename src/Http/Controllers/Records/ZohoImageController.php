@@ -2,12 +2,13 @@
 
 namespace Masmaleki\ZohoAllInOne\Http\Controllers\Records;
 
+
 use GuzzleHttp\Client;
 use Masmaleki\ZohoAllInOne\Http\Controllers\Auth\ZohoTokenCheck;
 
-class ZohoDealController
+class ZohoImageController
 {
-    public static function getCRMDealByIdV6($deal_id, $fields = null)
+    public static function getImageV6($zoho_id,$module)
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
@@ -21,13 +22,7 @@ class ZohoDealController
                 ],
             ];
         }
-
-        $apiURL = $token->api_domain . '/crm/v6/Deals/' . $deal_id ;
-
-        if ($fields) {
-            $apiURL .= '?fields=' . $fields;
-        }
-
+        $apiURL = $token->api_domain . '/crm/v6/'.$module.'/' . $zoho_id . '/photo';
         $client = new Client();
 
         $headers = [
@@ -35,28 +30,22 @@ class ZohoDealController
         ];
 
         try {
-            $response = $client->request('GET', $apiURL, ['headers' => $headers]);
-            $statusCode = $response->getStatusCode();
-            $responseBody = json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            $responseBody = [
-                'data' => [
-                    0 => [
-                        'code' => $e->getCode(),
-                        'message' => $e->getMessage(),
-                        'status' => 'error',
-                    ]
-                ],
-            ];
-        }
-        return $responseBody;
-    }
+            $response = $client->request('GET', $apiURL, ['headers' => $headers, ['stream' => true]]);
+            $responseBody = $response->getBody()->getContents();
+            $base64 = base64_encode($responseBody);
 
-    public static function create($data = null)
-    {
-        if (!$data) {
+            if (!$base64) return null;
+
+            $mime = "image/jpeg";
+            $img = ('data:' . $mime . ';base64,' . $base64);
+
+            return $img;
+        } catch (\Exception $e) {
             return null;
         }
+    }
+    public static function updateImageV6($zoho_id,$module, $image, $fileMime, $fileUploadedName)
+    {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
             return [
@@ -69,20 +58,25 @@ class ZohoDealController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/Deals';
+        $apiURL = $token->api_domain . '/crm/v6/'.$module.'/' . $zoho_id . '/photo';
         $client = new Client();
 
-        $headers = [
-            'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+        $params = [
+            'headers' => [
+                'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
+            ],
+            'multipart' => [
+                [
+                    'name' => 'file',
+                    'filename' => $fileUploadedName,
+                    'Mime-Type' => $fileMime,
+                    'contents' => $image,
+                ],
+            ],
         ];
 
-        $body = [
-            'data' => [
-                0 => $data
-            ]
-        ];
         try {
-            $response = $client->request('POST', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $response = $client->request('POST', $apiURL, $params);
             $statusCode = $response->getStatusCode();
             $responseBody = json_decode($response->getBody(), true);
         } catch (\Exception $e) {
@@ -99,10 +93,8 @@ class ZohoDealController
         return $responseBody;
     }
 
-    public static function updateV6($data = [])
+    public static function deleteImageV6($zoho_id,$module)
     {
-        $zoho_deal_id = $data['id'];
-
         $token = ZohoTokenCheck::getToken();
         if (!$token) {
             return [
@@ -115,25 +107,15 @@ class ZohoDealController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v6/Deals/' . $zoho_deal_id . '';
+        $apiURL = $token->api_domain . '/crm/v6/'.$module.'/' . $zoho_id . '/photo';
         $client = new Client();
 
         $headers = [
             'Authorization' => 'Zoho-oauthtoken ' . $token->access_token,
         ];
 
-        if (!isset($data['id'])) {
-            $data['id'] = $zoho_deal_id;
-        }
-
-        $body = [
-            'data' => [
-                0 => $data
-            ]
-        ];
-
         try {
-            $response = $client->request('PUT', $apiURL, ['headers' => $headers, 'body' => json_encode($body)]);
+            $response = $client->request('DELETE', $apiURL, ['headers' => $headers]);
             $statusCode = $response->getStatusCode();
             $responseBody = json_decode($response->getBody(), true);
         } catch (\Exception $e) {

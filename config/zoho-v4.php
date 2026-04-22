@@ -11,6 +11,8 @@ return [
     |
     */
     'location' => env('ZOHO_LOCATION', 'eu'),
+    'current_internal_organization_id' => null, // This is used to determine the current organization for the Zoho API calls
+    //and should dynamically set based on the organization context in your application.
 
     /*
     |--------------------------------------------------------------------------
@@ -270,4 +272,6 @@ return [
         ],
     ],
 
+    'sync_new_records_period_in_days' => env('ZOHO_SYNC_NEW_RECORDS_PERIOD_IN_DAYS', 1),
+    'report_data_collector_months_ago' => env('ZOHO_REPORT_DATA_COLLECTOR_MONTHS_AGO', 1),
 ];
