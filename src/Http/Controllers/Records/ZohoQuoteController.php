@@ -87,7 +87,7 @@ class ZohoQuoteController
         return $responseBody;
     }
 
-    public static function getAccountQuotes($zoho_crm_account_id, $page_token = null, $fields = null, $next_page, $per_page, $conditions = null)
+    public static function getAccountQuotes($zoho_crm_account_id, $page_token = null, $fields = null, $next_page = 1, $per_page = 200, $conditions = null)
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {

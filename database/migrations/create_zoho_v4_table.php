@@ -20,6 +20,7 @@ return new class extends Migration
     {
         Schema::create('zoho_v4', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('organization_id')->nullable()->index();
             $table->string('user_mail')->nullable();
             $table->string('client_id')->nullable();
             $table->string('client_secret')->nullable();

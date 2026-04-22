@@ -48,7 +48,7 @@ class ZohoAvailabilityController
         return $responseBody;
     }
 
-    public static function getProductAvailabilities($product_id, $fields = null, $condition)
+    public static function getProductAvailabilities($product_id, $fields = null, $condition = null)
     {
         $token = ZohoTokenCheck::getToken();
         if (!$token) {

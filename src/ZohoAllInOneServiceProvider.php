@@ -20,7 +20,12 @@ class ZohoAllInOneServiceProvider extends PackageServiceProvider
             ->name('zoho-v4')
             ->hasConfigFile()
             ->hasViews()
-            ->hasMigrations('create_zoho_v4_table', 'create_zoho_model_has_roles_table')
+            ->hasMigrations(
+                'create_zoho_v4_table',
+                'create_zoho_model_has_roles_table',
+                'rename_zoho_v3_to_zoho_v4_table',
+                'add_organization_id_to_zoho_v4_table',
+            )
             ->hasCommand(ZohoAllInOneCommand::class);
     }
 
