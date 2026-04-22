@@ -25,7 +25,7 @@ class ZohoExcessController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.excess');
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.excess');
         $client = new Client();
 
         $headers = [
@@ -71,7 +71,7 @@ class ZohoExcessController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v2.2/' . config('zoho-v4.custom_modules_names.excess') . '/' . $zoho_excess_id . '';
+        $apiURL = $token->api_domain . '/crm/v2.2/' . config('zoho-one.custom_modules_names.excess') . '/' . $zoho_excess_id . '';
         $client = new Client();
 
         $headers = [
@@ -121,7 +121,7 @@ class ZohoExcessController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.excess') . '/' . $excess_id;
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.excess') . '/' . $excess_id;
         $client = new Client();
 
         $headers = [
@@ -177,7 +177,7 @@ class ZohoExcessController
         }
 
         $body = [
-            'select_query' => "select " . $fields . " from " . config('zoho-v4.custom_modules_names.excess') . " where " . $condition . " order by Created_Time desc",
+            'select_query' => "select " . $fields . " from " . config('zoho-one.custom_modules_names.excess') . " where " . $condition . " order by Created_Time desc",
         ];
 
         try {
@@ -228,7 +228,7 @@ class ZohoExcessController
             $condition = " Created_Time between '" . Carbon::today()->subDays(1)->format("Y-m-d") . "T00:00:01+00:00' and '" . Carbon::today()->addDay()->format("Y-m-d") . "T23:59:59+00:00' ";
         }
         $body = [
-            'select_query' => "select " . $fields . " from " . config('zoho-v4.custom_modules_names.excess') . " where " . $condition . " order by Created_Time desc limit " . $offset . ", 200",
+            'select_query' => "select " . $fields . " from " . config('zoho-one.custom_modules_names.excess') . " where " . $condition . " order by Created_Time desc limit " . $offset . ", 200",
         ];
         // dd($body);
         try {

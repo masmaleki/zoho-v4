@@ -28,7 +28,7 @@ class ZohoVendorRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v6/' . config('zoho-v4.custom_modules_names.vendor_rfq');
+        $apiURL = $token->api_domain . '/crm/v6/' . config('zoho-one.custom_modules_names.vendor_rfq');
         $client = new Client();
 
         $headers = [
@@ -73,7 +73,7 @@ class ZohoVendorRFQController
             ];
         }
 
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '/' . $vendor_rfq_id;
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.vendor_rfq') . '/' . $vendor_rfq_id;
         $client = new Client();
 
         $headers = [
@@ -112,7 +112,7 @@ class ZohoVendorRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '?fields=Created_Time,id,Date,Email,Offered_Products,Quantity,Related_RFQs,Requested_Products,Secondary_Email,Status,Vendor_Name,Tag,Name,Vendor_RFQ_Number,Owner';
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.vendor_rfq') . '?fields=Created_Time,id,Date,Email,Offered_Products,Quantity,Related_RFQs,Requested_Products,Secondary_Email,Status,Vendor_Name,Tag,Name,Vendor_RFQ_Number,Owner';
         if ($page_token) {
             $apiURL .= '&page_token=' . $page_token;
         } else {
@@ -158,7 +158,7 @@ class ZohoVendorRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.vendor_rfq') . '/' . $zoho_rfq_id . '';
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.vendor_rfq') . '/' . $zoho_rfq_id . '';
         $client = new Client();
 
         $headers = [

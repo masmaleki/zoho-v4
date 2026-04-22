@@ -17,7 +17,7 @@ class ZohoAllInOneServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package
-            ->name('zoho-v4')
+            ->name('zoho-one')
             ->hasConfigFile()
             ->hasViews()
             ->hasMigrations(
@@ -47,6 +47,6 @@ class ZohoAllInOneServiceProvider extends PackageServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../database/seeders/ZohoUserHasRoleSeeder.php' => database_path('seeders/ZohoUserHasRoleSeeder.php'),
-        ], 'zoho-v4-seeders');
+        ], 'zoho-one-seeders');
     }
 }

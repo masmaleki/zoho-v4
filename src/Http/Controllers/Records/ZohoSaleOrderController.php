@@ -20,7 +20,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -56,7 +56,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -88,7 +88,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id . '&page=' . $page . $condition;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id . '&page=' . $page . $condition;
 
         $client = new Client();
 
@@ -119,7 +119,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sale_order_id . '?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sale_order_id . '?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -148,7 +148,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id . '&customer_id=' . $zoho_customer_id . '';
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders?organization_id=' . $organization_id . '&customer_id=' . $zoho_customer_id . '';
         $client = new Client();
 
         $headers = [
@@ -178,7 +178,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders?&customer_id=' . $zoho_customer_id . '&organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders?&customer_id=' . $zoho_customer_id . '&organization_id=' . $organization_id;
 
         if ($searchParameter) {
             $apiURL .= '&salesorder_number_contains=' . $searchParameter;
@@ -212,7 +212,7 @@ class ZohoSaleOrderController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sale_order_id . '?accept=pdf';
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sale_order_id . '?accept=pdf';
         $client = new Client();
 
         $headers = [
@@ -470,7 +470,7 @@ class ZohoSaleOrderController
         }
 
 
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/attachment?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/attachment?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -519,7 +519,7 @@ class ZohoSaleOrderController
         }
 
 
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/attachment?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/attachment?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -560,7 +560,7 @@ class ZohoSaleOrderController
             ];
         }
 
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/submit?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/submit?organization_id=' . $organization_id;
 
         $client = new Client();
 
@@ -601,7 +601,7 @@ class ZohoSaleOrderController
             ];
         }
 
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/comments?organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/salesorders/' . $sales_order_id . '/comments?organization_id=' . $organization_id;
 
         $client = new Client();
 

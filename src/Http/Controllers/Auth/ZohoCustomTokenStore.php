@@ -83,15 +83,15 @@ class ZohoCustomTokenStore
             'grant_type' => 'refresh_token',
         ];
         if ($organizationId == null) {
-            $z_url = config('zoho-v4.accounts_url');
-            $z_return_url = config('zoho-v4.redirect_uri');
-            $z_api_url = config('zoho-v4.api_base_url');
-            $location = config('zoho-v4.location');
+            $z_url = config('zoho-one.accounts_url');
+            $z_return_url = config('zoho-one.redirect_uri');
+            $z_api_url = config('zoho-one.api_base_url');
+            $location = config('zoho-one.location');
         } else {
-            $z_url = config('zoho-v4.accounts_url_' . $organizationId);
-            $z_return_url = config('zoho-v4.redirect_uri_' . $organizationId);
-            $z_api_url = config('zoho-v4.api_base_url_' . $organizationId);
-            $location = config('zoho-v4.location_' . $organizationId);
+            $z_url = config('zoho-one.accounts_url_' . $organizationId);
+            $z_return_url = config('zoho-one.redirect_uri_' . $organizationId);
+            $z_api_url = config('zoho-one.api_base_url_' . $organizationId);
+            $location = config('zoho-one.location_' . $organizationId);
         }
 
 

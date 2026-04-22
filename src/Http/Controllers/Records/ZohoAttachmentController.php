@@ -148,7 +148,7 @@ class ZohoAttachmentController
             ];
         }
 
-        $apiURL = config('zoho-v4.books_api_base_url') . "/books/v3/$module/$module_id/attachment?organization_id=$organization_id";
+        $apiURL = config('zoho-one.books_api_base_url') . "/books/v3/$module/$module_id/attachment?organization_id=$organization_id";
 
         $client = new Client();
 

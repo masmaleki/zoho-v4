@@ -103,7 +103,7 @@ class ZohoContactController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/contacts?organization_id=' . $organization_id . '&page=' . $page . $condition;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/contacts?organization_id=' . $organization_id . '&page=' . $page . $condition;
 
         $client = new Client();
 
@@ -133,7 +133,7 @@ class ZohoContactController
                 'message' => 'Invalid/missing token or organization ID.',
             ];
         }
-        $apiURL = config('zoho-v4.books_api_base_url') . "/books/v3/contacts/$contact_id?organization_id=$organization_id";
+        $apiURL = config('zoho-one.books_api_base_url') . "/books/v3/contacts/$contact_id?organization_id=$organization_id";
 
         $client = new Client();
 

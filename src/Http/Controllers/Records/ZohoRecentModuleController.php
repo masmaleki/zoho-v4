@@ -35,7 +35,7 @@ class ZohoRecentModuleController
         $startTime = $startTime ?: "T00:00:01+00:00";
         $endTime = $endTime ?: "T23:59:59+00:00";
 
-        $startDay = $startDay ?: Carbon::today()->subDays((int)config('zoho-v4.sync_new_records_period_in_days'))->format("Y-m-d") . $startTime;
+        $startDay = $startDay ?: Carbon::today()->subDays((int)config('zoho-one.sync_new_records_period_in_days'))->format("Y-m-d") . $startTime;
         $endDay = $endDay ?: Carbon::today()->addDay(1)->format("Y-m-d") . $endTime;
 
         switch ($action) {

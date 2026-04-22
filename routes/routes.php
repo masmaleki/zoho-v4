@@ -12,9 +12,9 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => config('zoho-v4.middleware', ['web']),
-    'domain' => config('zoho-v4.domain', null),
-    'prefix' => config('zoho-v4.prefix'),
+    'middleware' => config('zoho-one.middleware', ['web']),
+    'domain' => config('zoho-one.domain', null),
+    'prefix' => config('zoho-one.prefix'),
 ], function () {
     Route::prefix('zoho')->group(function () {
         Route::get('/application/register', [ZohoTokenCheck::class, 'applicationRegister'])->name('zoho.application.register');

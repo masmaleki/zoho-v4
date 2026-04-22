@@ -1,12 +1,13 @@
 {
-    "name": "masmaleki/zoho-v4",
+    "name": "masmaleki/zoho-one",
     "description": "Zoho all in one for Laravel",
     "keywords": [
         "masmaleki",
         "laravel",
-        "zoho-v4"
+        "zoho",
+        "zoho-one"
     ],
-    "homepage": "https://github.com/masmaleki/zoho-v4",
+    "homepage": "https://github.com/masmaleki/zoho-one",
     "license": "MIT",
     "authors": [
         {

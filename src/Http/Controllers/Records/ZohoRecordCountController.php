@@ -161,7 +161,7 @@ class ZohoRecordCountController
             return $responseBody;
         }
 
-        $apiURL = config('zoho-v4.books_api_base_url') . '/books/v3/' . $moduleName . '?page=1&per_page=2&response_option=2&organization_id=' . $organization_id;
+        $apiURL = config('zoho-one.books_api_base_url') . '/books/v3/' . $moduleName . '?page=1&per_page=2&response_option=2&organization_id=' . $organization_id;
 
         if ($condition) {
             $apiURL .= $condition;

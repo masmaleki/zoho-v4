@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class ZohoAllInOneCommand extends Command
 {
-    public $signature = 'zoho-v4';
+    public $signature = 'zoho-one';
 
     public $description = 'My command';
 

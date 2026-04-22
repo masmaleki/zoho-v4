@@ -23,7 +23,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq') . '/' . $rfq_id;
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq') . '/' . $rfq_id;
         $client = new Client();
 
         $headers = [
@@ -62,7 +62,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v2/' . config('zoho-v4.custom_modules_names.rfq') . '/' . $rfq_id . '/' . $list;
+        $apiURL = $token->api_domain . '/crm/v2/' . config('zoho-one.custom_modules_names.rfq') . '/' . $rfq_id . '/' . $list;
         $client = new Client();
 
         $headers = [
@@ -101,7 +101,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq') . '?fields=Name,Product_Name,id,RFQ_Date,Quantity,Status';
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq') . '?fields=Name,Product_Name,id,RFQ_Date,Quantity,Status';
         $client = new Client();
 
         $headers = [
@@ -211,7 +211,7 @@ class ZohoRFQController
 
         $fields = $fields ? $fields : 'Name, Customer_RFQ_No, RFQ_Date, id, Owner, Status, RFQ_Dead_Line, Product_Name, Product_Name.Product_Name,  Account_Name, Quantity, RFQ_Status, Contact ,RFQ_Source';
         $body = [
-            'select_query' => "select " . $fields . " from " . config('zoho-v4.custom_modules_names.rfq') . "  where " . $conditions . $zoho_crm_account_id_conditions . "  limit " . $offset . ", 200",
+            'select_query' => "select " . $fields . " from " . config('zoho-one.custom_modules_names.rfq') . "  where " . $conditions . $zoho_crm_account_id_conditions . "  limit " . $offset . ", 200",
         ];
 
         try {
@@ -258,7 +258,7 @@ class ZohoRFQController
 
         $fields = $fields ? $fields : 'Name, Customer_RFQ_No, RFQ_Date, id,  Status, RFQ_Dead_Line,Owner,Owner.email,Owner.first_name,Owner.last_name, Product_Name,Product_Name.Manufacture.Name, Product_Name.Product_Name,  Account_Name,  Account_Name.Account_Name, Quantity, RFQ_Status, RFQ_Source';
         $body = [
-            'select_query' => "select " . $fields . " from " . config('zoho-v4.custom_modules_names.rfq') . "  where " . $conditions . "  limit " . $offset . ", 200",
+            'select_query' => "select " . $fields . " from " . config('zoho-one.custom_modules_names.rfq') . "  where " . $conditions . "  limit " . $offset . ", 200",
         ];
 
         try {
@@ -294,7 +294,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq') . '/search?word=' . $phrase . $criteria;
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq') . '/search?word=' . $phrase . $criteria;
         $client = new Client();
 
         $headers = [
@@ -336,7 +336,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq');
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq');
         $client = new Client();
 
         $headers = [
@@ -383,7 +383,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq') . '/' . $zoho_rfq_id . '';
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq') . '/' . $zoho_rfq_id . '';
         $client = new Client();
 
         $headers = [
@@ -437,7 +437,7 @@ class ZohoRFQController
             ];
         }
 
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq_alternative_product');
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq_alternative_product');
         $client = new Client();
 
         $headers = [
@@ -489,7 +489,7 @@ class ZohoRFQController
                 ],
             ];
         }
-        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-v4.custom_modules_names.rfq_alternative_product') . '/' . $alternative_product_x_rfq_id;
+        $apiURL = $token->api_domain . '/crm/v3/' . config('zoho-one.custom_modules_names.rfq_alternative_product') . '/' . $alternative_product_x_rfq_id;
         $client = new Client();
 
         $headers = [

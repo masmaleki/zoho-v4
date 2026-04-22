@@ -1,94 +1,79 @@
-
-
-
 # Zoho all in one for Laravel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/masmaleki/zoho-v4.svg?style=flat-square)](https://packagist.org/packages/masmaleki/zoho-v4)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/masmaleki/zoho-v4/run-tests?label=tests)](https://github.com/masmaleki/zoho-v4/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/masmaleki/zoho-v4/Fix%20PHP%20code%20style%20issues?label=code%20style)](https://github.com/masmaleki/zoho-v4/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
-[![Total Downloads](https://img.shields.io/packagist/dt/masmaleki/zoho-v4.svg?style=flat-square)](https://packagist.org/packages/masmaleki/zoho-v4)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/masmaleki/zoho-one.svg?style=flat-square)](https://packagist.org/packages/masmaleki/zoho-one)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/masmaleki/zoho-one/run-tests.yml?branch=main&label=tests)](https://github.com/masmaleki/zoho-one/actions?query=workflow%3Arun-tests+branch%3Amain)
+[![Total Downloads](https://img.shields.io/packagist/dt/masmaleki/zoho-one.svg?style=flat-square)](https://packagist.org/packages/masmaleki/zoho-one)
 
-Laravel Package for integration ZOHO version 3 API.
+Laravel package for integration with the Zoho v3 API (CRM + Books + Inventory) with multi-organization token support.
 
 ## Installation
 
-You can install the package via composer:
+Install the package via Composer:
 
 ```bash
-composer require masmaleki/zoho-v4
+composer require masmaleki/zoho-one
 ```
 
-You can publish and run the migrations with:
+Publish and run the migrations:
 
 ```bash
-php artisan vendor:publish --tag="zoho-v4-migrations"
+php artisan vendor:publish --tag="zoho-one-migrations"
 php artisan migrate
 ```
 
-You can publish the config file with:
+Publish the config file:
 
 ```bash
-php artisan vendor:publish --tag="zoho-v4-config"
+php artisan vendor:publish --tag="zoho-one-config"
 ```
 
-This is the contents of the published config file:
+The config is published to `config/zoho-one.php`. Reference values in your app via `config('zoho-one.*')`.
 
-```php
-return [
-];
-```
+## Upgrading from `masmaleki/zoho-v3` or `masmaleki/zoho-v4`
 
-<!-- ## Usage
+This package was previously published as `masmaleki/zoho-v3` and briefly as `masmaleki/zoho-v4`.
+The package name no longer carries a version suffix; the underlying database table is still
+named `zoho_v4` (it is an internal implementation detail and is not renamed again to avoid
+forcing another migration on existing installs).
 
-```php
-$zohoAllInOne = new masmaleki\ZohoAllInOne();
-echo $zohoAllInOne->echoPhrase('Hello, masmaleki!');
-``` -->
+To upgrade:
 
-<!-- ## Testing
-
-```bash
-composer test
-``` -->
-
-## Upgrading from `masmaleki/zoho-v3`
-
-This package was previously published as `masmaleki/zoho-v3`. Version 4 renames both the
-Composer package and the underlying database table (`zoho_v3` → `zoho_v4`) and introduces
-multi-organization token support.
-
-To upgrade from v3:
-
-1. Update the requirement in your `composer.json`:
+1. Swap the Composer requirement:
 
     ```bash
-    composer remove masmaleki/zoho-v3
-    composer require masmaleki/zoho-v4
+    composer remove masmaleki/zoho-v3   # or masmaleki/zoho-v4
+    composer require masmaleki/zoho-one
     ```
 
-2. Re-publish the migrations and run them. The package ships two upgrade migrations
-   that detect existing v3 data and migrate it in place — both are idempotent and
-   safe to re-run:
+2. Publish and run the migrations. Two guarded upgrade migrations ship with the package
+   (both are idempotent and safe to re-run):
 
     ```bash
-    php artisan vendor:publish --tag="zoho-v4-migrations"
+    php artisan vendor:publish --tag="zoho-one-migrations"
     php artisan migrate
     ```
 
-   - `rename_zoho_v3_to_zoho_v4_table` renames the existing `zoho_v3` table to
-     `zoho_v4` (no-op on fresh installs).
-   - `add_organization_id_to_zoho_v4_table` adds the `organization_id` column
-     required by the multi-organization feature (no-op if already present).
+   - `rename_zoho_v3_to_zoho_v4_table` renames the legacy `zoho_v3` table to `zoho_v4`
+     (no-op if you are already on `zoho_v4` or on a fresh install).
+   - `add_organization_id_to_zoho_v4_table` adds the `organization_id` column required by
+     the multi-organization feature (no-op if already present).
 
-3. Re-publish the config (it has been renamed to `config/zoho-v4.php`) and copy
-   any custom values from your old `config/zoho-v3.php`:
+3. Re-publish the config (it has been renamed to `config/zoho-one.php`) and copy any
+   custom values from your old `config/zoho-v3.php` or `config/zoho-v4.php`:
 
     ```bash
-    php artisan vendor:publish --tag="zoho-v4-config"
+    php artisan vendor:publish --tag="zoho-one-config"
     ```
 
-   Update any `config('zoho-v3.*')` calls in your application code to
-   `config('zoho-v4.*')`.
+   Update any `config('zoho-v3.*')` or `config('zoho-v4.*')` calls in your application
+   code to `config('zoho-one.*')`.
+
+## Compatibility
+
+| Component | Range |
+|---|---|
+| PHP | 8.2 / 8.3 / 8.4 |
+| Laravel | 10.x / 11.x / 12.x / 13.x |
 
 ## Changelog
 
